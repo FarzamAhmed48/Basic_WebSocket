@@ -19,12 +19,22 @@ app.get('/', (req, res) => {
       console.log('user disconnected');
     });
 
+    socket.on('request', (arg1, arg2, callback) => {
+        console.log(arg2); // 'baz'
+        callback({
+          status: 'ok'
+        });
+
+        io.emit('request',arg2)
+      });
+
+
     socket.on('chat:message', (data) => {
         console.log((data))
         console.log(`This is the message you received: `,data)
         io.emit('chat:message', data); // broadcast to all users
 
-
+        
       });
   });
 server.listen(3000,()=>{
