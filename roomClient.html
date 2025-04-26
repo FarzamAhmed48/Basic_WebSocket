@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Socket.IO Rooms Example</title>
+</head>
+
+<body>
+    <h1>Socket.IO Rooms Demo</h1>
+    <ul id="messages"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const messages = document.getElementById('messages');
+        socket.on('connect', () => {
+            console.log('Connected with ID:', socket.id);
+        });
+
+        // Listen for private message
+        socket.on('private-message', ({ from, message }) => {
+            console.log(`Private message from ${from}: ${message}`);
+            const li = document.createElement('li');
+            li.textContent = message;
+            messages.appendChild(li)
+        });
+        function sendPrivateMessage(recipientId, message) {
+            socket.emit('private-message', { recipientId, message });
+        }
+
+
+        setTimeout(() => {
+            const recipientId = prompt("Enter recipient socket ID:");
+            const message = prompt("Enter your private message:");
+            sendPrivateMessage(recipientId, message);
+        }, 5000);
+        socket.on('message', (msg) => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            messages.appendChild(li);
+        });
+    </script>
+</body>
+
+</html>
