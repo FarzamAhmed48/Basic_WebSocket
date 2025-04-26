@@ -74,7 +74,7 @@
         const input = document.getElementById('input')
         const messages = document.getElementById('messages');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit',async (e) => {
             console.log(input.value, "jkfsdjk")
             e.preventDefault()
             if (input.value) {
@@ -82,13 +82,20 @@
 
                 input.value = '';
 
-                socket.timeout(5000).emit('request', { foo: 'bar' }, 'baz', (err, response) => {
-                    if (err) {
-                        // server did not respond in time
-                    } else {
-                        console.log(response.status); // 'ok'
-                    }
-                });
+                // socket.timeout(5000).emit('request', { foo: 'bar' }, 'baz', (err, response) => {
+                //     if (err) {
+                //         console.log(err)
+                //     } else {
+                //         console.log(response.status); // 'ok'
+                //     }
+                // });
+
+                try {
+                    const response = await socket.timeout(5000).emitWithAck('request', { foo: 'bar' }, 'baz');
+                    console.log(response.status); // 'ok'
+                } catch (e) {
+                    console.log(e)
+                }
             }
 
         });
